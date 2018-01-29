@@ -27,13 +27,15 @@ nnoremap <A-F0> 10gt
 
 call plug#begin('~/.vim/plugged')
 Plug 'scrooloose/syntastic'
+Plug 'scrooloose/nerdtree'
 Plug 'airblade/vim-gitgutter'
 Plug 'fatih/vim-go'
+Plug 'andrewstuart/vim-kubernetes'
+"Plug 'sebdah/vim-delve'
 Plug 'kien/ctrlp.vim'
 Plug 'vim-airline/vim-airline'
 Plug 'rakr/vim-one'
 Plug 'chriskempson/base16-vim'
-Plug 'vim-scripts/c.vim'
 Plug 'valloric/youcompleteme'
 Plug 'jdsimcoe/abstract.vim'
 call plug#end()
@@ -52,6 +54,10 @@ au BufNewFile,BufRead "*.py"
     \ set fileformat=unix
 " Web specific
 au BufNewFile,BufRead "*.js", "*.html", "*.css"
+    \ set tabstop=2
+    \ set softtabstop=2
+    \ set shiftwidth=2
+au BufNewFile,BufRead "*.yml", "*.yaml"
     \ set tabstop=2
     \ set softtabstop=2
     \ set shiftwidth=2
