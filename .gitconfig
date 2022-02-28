@@ -1,0 +1,7 @@
+[user]
+	name = Harsh Vardhan
+	email = harsh@gmail.com
+[init]
+	defaultBranch = main
+[grep]
+	lineNumber = true
