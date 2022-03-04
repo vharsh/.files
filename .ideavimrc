@@ -1,0 +1,3 @@
+set number
+set relativenumber
+" https://github.com/JetBrains/ideavim/blob/master/doc/set-commands.md
