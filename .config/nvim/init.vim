@@ -38,7 +38,7 @@ Plug 'vim-scripts/CSApprox'
 Plug 'Raimondi/delimitMate'
 Plug 'scrooloose/nerdtree'
 Plug 'majutsushi/tagbar'
-Plug 'w0rp/ale'
+Plug 'dense-analysis/ale'
 Plug 'Yggdroot/indentLine'
 Plug 'avelino/vim-bootstrap-updater'
 Plug 'sheerun/vim-polyglot'
@@ -84,11 +84,10 @@ Plug 'fatih/vim-go', {'do': ':GoInstallBinaries'}
 
 
 " rust
-" Vim racer
-Plug 'racer-rust/vim-racer'
 
 " Rust.vim
 Plug 'rust-lang/rust.vim'
+Plug 'fannheyward/coc-rust-analyzer'
 
 
 "*****************************************************************************
@@ -115,6 +114,7 @@ set fileencodings=utf-8
 set termguicolors
 set path+=**
 set wildmenu
+set foldmethod=manual
 command! MakeTags !gentags
 " :find lets you find files easily
 " :b lets you open earlier opened files
@@ -394,8 +394,10 @@ let g:UltiSnipsJumpBackwardTrigger="<c-b>"
 let g:UltiSnipsEditSplit="vertical"
 
 " ale
-let g:ale_linters = {}
-
+let g:ale_linters = {
+            \"rust": ["analyzer"],}
+let g:ale_fixers = {
+            \"rust": ["rustfmt"],}
 " Tagbar
 nmap <silent> <F4> :TagbarToggle<CR>
 let g:tagbar_autofocus = 1
@@ -526,17 +528,14 @@ augroup END
 
 " ale
 :call extend(g:ale_linters, {
-    \"go": ['golint', 'go vet'], })
+    \"go": ['golint', 'go vet']})
 
 
 " rust
-" Vim racer
-au FileType rust nmap gd <Plug>(rust-def)
-au FileType rust nmap gs <Plug>(rust-def-split)
-au FileType rust nmap gx <Plug>(rust-def-vertical)
-au FileType rust nmap <leader>gd <Plug>(rust-doc)
-
-
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
 
 "*****************************************************************************
 "*****************************************************************************
