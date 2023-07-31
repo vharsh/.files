@@ -4,22 +4,10 @@
 "" Vim-PLug core
 "*****************************************************************************
 let vimplug_exists=expand('~/.config/nvim/autoload/plug.vim')
-
+let g:loaded_ruby_provider = 0
+let g:loaded_perl_provider = 0
 let g:vim_bootstrap_langs = "c,go,rust"
 let g:vim_bootstrap_editor = "nvim"				" nvim or vim
-
-if !filereadable(vimplug_exists)
-  if !executable("curl")
-    echoerr "You have to install curl or first install vim-plug yourself!"
-    execute "q!"
-  endif
-  echo "Installing Vim-Plug..."
-  echo ""
-  silent exec "!\curl -fLo " . vimplug_exists . " --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
-  let g:not_finish_vimplug = "yes"
-
-  autocmd VimEnter * PlugInstall
-endif
 
 " Required:
 call plug#begin(expand('~/.config/nvim/plugged'))
@@ -38,13 +26,15 @@ Plug 'vim-scripts/CSApprox'
 Plug 'Raimondi/delimitMate'
 Plug 'scrooloose/nerdtree'
 Plug 'majutsushi/tagbar'
-Plug 'w0rp/ale'
+Plug 'dense-analysis/ale'
 Plug 'Yggdroot/indentLine'
 Plug 'avelino/vim-bootstrap-updater'
 Plug 'sheerun/vim-polyglot'
 Plug 'tpope/vim-rhubarb' " required by fugitive to :Gbrowse
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'ayu-theme/ayu-vim'
+Plug 'rakr/vim-one'
+Plug 'altercation/vim-colors-solarized'
 Plug 'wakatime/vim-wakatime'
 
 if isdirectory('/usr/local/opt/fzf')
@@ -84,12 +74,10 @@ Plug 'fatih/vim-go', {'do': ':GoInstallBinaries'}
 
 
 " rust
-" Vim racer
-Plug 'racer-rust/vim-racer'
 
 " Rust.vim
 Plug 'rust-lang/rust.vim'
-
+let g:rustfmt_autosave = 1
 
 "*****************************************************************************
 "*****************************************************************************
@@ -115,12 +103,14 @@ set fileencodings=utf-8
 set termguicolors
 set path+=**
 set wildmenu
+set foldmethod=manual
 command! MakeTags !gentags
 " :find lets you find files easily
 " :b lets you open earlier opened files
 " set path helps you `:find` files in the current vim directory and it's
 " sub-directories
-colorscheme dracula
+colorscheme one
+set background=light
 
 "" Fix backspace indent
 set backspace=indent,eol,start
@@ -157,7 +147,7 @@ let g:session_directory = "~/.config/nvim/session"
 let g:session_autoload = "no"
 let g:session_autosave = "no"
 let g:session_command_aliases = 1
-
+"
 " Use deoplete.
 let g:deoplete#enable_at_startup = 1
 
@@ -178,31 +168,10 @@ syntax on
 set ruler
 set number
 set relativenumber
-
-let no_buffers_menu=1
-silent! colorscheme molokai
-
 set mousemodel=popup
 set t_Co=256
 set guioptions=egmrti
 set gfn=Monospace\ 10
-
-if has("gui_running")
-  if has("gui_mac") || has("gui_macvim")
-    set guifont=Menlo:h12
-    set transparency=7
-  endif
-else
-  let g:CSApprox_loaded = 1
-
-  " IndentLine
-  let g:indentLine_enabled = 1
-  let g:indentLine_concealcursor = 0
-  let g:indentLine_char = '┆'
-  let g:indentLine_faster = 1
-
-
-endif
 
 
 
@@ -233,7 +202,7 @@ if exists("*fugitive#statusline")
 endif
 
 " vim-airline
-let g:airline_theme = 'powerlineish'
+let g:airline_theme = 'one'
 let g:airline#extensions#branch#enabled = 1
 let g:airline#extensions#ale#enabled = 1
 let g:airline#extensions#tabline#enabled = 1
@@ -297,7 +266,7 @@ endif
 "*****************************************************************************
 "" Autocmd Rules
 "*****************************************************************************
-"" The PC is fast enough, do syntax highlight syncing from start unless 200 lines
+" The PC is fast enough, do syntax highlight syncing from start unless 200 lines
 augroup vimrc-sync-fromstart
   autocmd!
   autocmd BufEnter * :syntax sync maxlines=200
@@ -394,7 +363,10 @@ let g:UltiSnipsJumpBackwardTrigger="<c-b>"
 let g:UltiSnipsEditSplit="vertical"
 
 " ale
-let g:ale_linters = {}
+let g:ale_linters = {
+            \"rust": ["analyzer"],}
+let g:ale_fixers = {
+            \"rust": ["rustfmt"],}
 
 " Tagbar
 nmap <silent> <F4> :TagbarToggle<CR>
@@ -526,17 +498,14 @@ augroup END
 
 " ale
 :call extend(g:ale_linters, {
-    \"go": ['golint', 'go vet'], })
+    \"go": ['golint', 'go vet']})
 
 
 " rust
-" Vim racer
-au FileType rust nmap gd <Plug>(rust-def)
-au FileType rust nmap gs <Plug>(rust-def-split)
-au FileType rust nmap gx <Plug>(rust-def-vertical)
-au FileType rust nmap <leader>gd <Plug>(rust-doc)
-
-
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
 
 "*****************************************************************************
 "*****************************************************************************
